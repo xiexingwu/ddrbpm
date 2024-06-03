@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
+import type { Bpm } from "../types/Bpm";
 
 type SpeedMod = number;
 // | 0.25
@@ -29,16 +30,16 @@ type SpeedMod = number;
 
 type Props = {
     speedMod?: SpeedMod;
-    bpms: [number] | [number, number];
+    bpms: Bpm;
     readSpeed?: number;
 };
 
 function fmtSpeedMod(speedMod: SpeedMod): string {
     let str = speedMod.toFixed(2);
 
-    if (str.slice(-1) == "0") str = str.slice(0, -1);
-    if (str.slice(-1) == "0") str = str.slice(0, -1);
-    if (str.slice(-1) == ".") str = str.slice(0, -1);
+    if (str.endsWith("0")) str = str.slice(0, -1);
+    if (str.endsWith("0")) str = str.slice(0, -1);
+    if (str.endsWith(".")) str = str.slice(0, -1);
 
     return str;
 }
@@ -46,7 +47,7 @@ function fmtSpeedMod(speedMod: SpeedMod): string {
 function guessSpeedMod(bpm: number, readSpeed: number) {
     let guess = Math.floor(readSpeed / bpm);
     while (guess <= 7.5) {
-        let nextGuess = guess + (guess < 4.0 ? 0.25 : 0.5);
+        const nextGuess = guess + (guess < 4.0 ? 0.25 : 0.5);
         if (readSpeed - nextGuess * bpm < 0) {
             break;
         }
@@ -108,7 +109,7 @@ export default function BpmPicker(props: Props) {
         guessSpeedMod(props.bpms.slice(-1).pop()!, props.readSpeed ?? 500),
     );
 
-    let mods = [speedMod];
+    const mods = [speedMod];
     if (speedMod > 0.25) {
         mods.push(speedMod - (speedMod > 4.0 ? 0.5 : 0.25));
     }
