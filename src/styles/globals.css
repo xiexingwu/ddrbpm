@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Dificult text colour */
+[data-diff="b"]{
+    color: #1ed6ff
+}
+[data-diff="B"]{
+    color: #ffaa19
+}
+[data-diff="D"]{
+    color: #ff1e3c
+}
+[data-diff="E"]{
+    color: #32eb19 
+}
+[data-diff="C"]{
+    color: #eb1eff
+}
