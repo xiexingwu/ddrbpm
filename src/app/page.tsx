@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import BpmPicker from "./components/BpmPicker";
-import { AppContext, defaultAppContext } from "./AppContext";
 import NavBar from "./components/NavBar";
 
 export default function HomePage() {

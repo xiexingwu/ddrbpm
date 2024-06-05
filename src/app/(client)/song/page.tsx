@@ -1,14 +1,11 @@
 "use client";
-import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
+import Image from "next/image";
 import getAssetPath from "~/utils/assets";
-import { Levels, diffs } from "~/types/Level";
-import { Bpm } from "~/types/Bpm";
+import { type Levels, diffs } from "~/types/Level";
+import { type Bpm } from "~/types/Bpm";
 import BpmSvg from "~/(svg)/BpmSvg";
 import { AppContext } from "~/AppContext";
-import { SortBy } from "~/types/SortBy";
-
-type Sort = "Level" | "Name" | "Version";
 
 type SummarySong = {
     name: string;
@@ -56,7 +53,7 @@ export default function SongPage() {
             .then((response): Promise<Summary> => response.json())
             .then((data) => setSummary(data))
             .catch(() => console.log(`failed to fetch/parse`));
-    }, [context.sortBy, context.isSp]);
+    }, [context.sortBy, context.isSp]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // components
     function SongCategoryHeader(props: HeaderProps) {
@@ -76,10 +73,22 @@ export default function SongPage() {
         }
         return (
             <div
-                className={`w-full text-center font-bold ${props.sticky ? "fixed sticky top-12 z-50" : ""}`}
+                className={[
+                    props.sticky ? "fixed sticky top-12 z-50" : "",
+                    "bg-blue-500 w-full flex flex-row items-center",
+                ].join(" ")}
                 onClick={props.onClick}
             >
-                {prefix} {props.category}
+                <div
+                    style={{ backgroundImage: "url('/category_header.png')" }}
+                    className={[
+                        "bg-cover bg-center",
+                        "w-[360px] leading-8",
+                        "text-center font-bold",
+                    ].join(" ")}
+                >
+                    {prefix} {props.category}
+                </div>
             </div>
         );
     }
@@ -92,8 +101,11 @@ export default function SongPage() {
                         className="flex-column flex flex-wrap justify-center"
                         key={i}
                     >
-                        <img
+                        <Image
+                            alt={song.name}
                             src={getAssetPath("jacket", song.name)}
+                            width={160}
+                            height={160}
                             className="scale-90"
                         />
 
@@ -133,8 +145,7 @@ export default function SongPage() {
 
     return (
         <div className="container">
-            {summary &&
-                summary.map(({ category, songs }, _) => {
+            {summary?.map(({ category, songs }, _) => {
                     category = category.toString();
                     return (
                         <>

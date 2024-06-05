@@ -1,9 +1,10 @@
 import "./NavBar.css";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useContext } from "react";
 import { AppContext } from "~/AppContext";
-import { sortBys } from "~/types/SortBy";
+import { type SortBy, sortBys } from "~/types/SortBy";
 
 type Props = {
     withContext: boolean;
@@ -38,13 +39,13 @@ export default function NavBar(props: Props) {
 function Settings() {
     const context = useContext(AppContext);
 
-    function SortBy() {
+    function SortSelect() {
         return (
             <div>
                 <select
                     className="bg-inherit"
                     value={context.sortBy}
-                    onChange={(e) => context.setSortBy(e.target.value)}
+                    onChange={(e) => context.setSortBy(e.target.value as SortBy)}
                 >
                     {sortBys.map((sortBy, _) => {
                         return (
@@ -67,11 +68,11 @@ function Settings() {
             >
                 <p className="">{context.isSp ? "SP" : "DP"}</p>
                 <div className="relative -mx-2">
-                    <img
+                    <Image alt="dp"
                         className={`scale-[0.66] ${!context.isSp ? "" : "grayscale"}`}
                         src="/pad_dp.png"
                     />
-                    <img
+                    <Image alt="sp"
                         className={`absolute inset-0 scale-[0.66]`}
                         src="/pad_sp.png"
                     />
@@ -82,7 +83,7 @@ function Settings() {
 
     return (
         <div className="flex flex-row items-center space-x-2">
-            <SortBy />
+            <SortSelect />
             <SpDp />
         </div>
     );

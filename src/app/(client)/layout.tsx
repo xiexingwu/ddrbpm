@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import { IAppContext, AppContext } from "~/AppContext";
+import { type IAppContext, AppContext } from "~/AppContext";
 import NavBar from "~/components/NavBar";
-import { SortBy } from "~/types/SortBy";
+import { type SortBy } from "~/types/SortBy";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const [isSp, setIsSp] = useState<boolean>(true);

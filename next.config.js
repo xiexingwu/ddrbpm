@@ -8,6 +8,18 @@ await import("./src/env.js");
 const nextConfig = {
     output: "export",
 
+    images: {
+        unoptimized: true,
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "raw.githubusercontent.com",
+                port: "",
+                // pathname: "/xiexingwu/DDR-BPM-prep/**"
+            }
+        ]
+    }
+
     // Optional: Change links `/me` -> `/me/` and emit `/me.html` -> `/me/index.html`
     // trailingSlash: true,
 
