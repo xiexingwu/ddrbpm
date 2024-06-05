@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
-import type { Bpm } from "../types/Bpm";
+import type { Bpm } from "~/types/Bpm";
 
 type SpeedMod = number;
 // | 0.25

@@ -1,10 +1,12 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import getAssetPath from "../utils/assets";
-import { Levels, diffs } from "../types/Level";
-import { Bpm } from "../types/Bpm";
-import BpmSvg from "../(svg)/BpmSvg";
+import { useContext, useEffect, useState } from "react";
+import getAssetPath from "~/utils/assets";
+import { Levels, diffs } from "~/types/Level";
+import { Bpm } from "~/types/Bpm";
+import BpmSvg from "~/(svg)/BpmSvg";
+import { AppContext } from "~/AppContext";
+import { SortBy } from "~/types/SortBy";
 
 type Sort = "Level" | "Name" | "Version";
 
@@ -21,34 +23,60 @@ type SummaryCategory = string; // 1-19, A-Z0-9 kanas, A3/A20P/etc.
 
 type Summary = Record<SummaryCategory, SummarySong[]>;
 
-type SongCategoryProps = {
+type HeaderProps = {
     category: string;
+    sticky: boolean;
     onClick: () => void;
 };
 
 export default function SongPage() {
-    const [sortBy, setSortBy] = useState<Sort>("Version");
-    const [isSp, setIsSp] = useState<boolean>(true);
+    const context = useContext(AppContext);
 
-    const [openIndex, setOpenIndex] = useState<number>(-1);
+    const [openCategory, setOpenCategory] = useState<string>("");
 
     // Load data
     const [summary, setSummary] = useState<Summary | null>(null);
     useEffect(() => {
-        fetch(getAssetPath("summary", "songs_level_sp"))
+                console.log(context);
+        let summaryName: string;
+        switch (context.sortBy) {
+            case "Version":
+                summaryName = "songs_version";
+                break;
+            case "Level":
+                summaryName = `songs_level_${context.isSp ? "sp" : "dp"}`;
+                break;
+            case "Name":
+            default:
+                summaryName = "songs_name";
+        }
+
+        fetch(getAssetPath("summary", summaryName))
             .then((response): Promise<Summary> => response.json())
             .then((data) => setSummary(data))
             .catch(() => console.log(`failed to fetch/parse`));
-    }, [sortBy, isSp]);
+    }, [context.sortBy, context.isSp]);
 
     // components
-    function SongCategoryHeader(props: SongCategoryProps) {
+    function SongCategoryHeader(props: HeaderProps) {
+        let prefix: string
+        switch (context.sortBy) {
+            case "Version":
+                prefix = "DDR"
+                break;
+            case "Level":
+                prefix = "LEVEL"
+                break
+            case "Name":
+            default:
+                prefix = ""
+        }
         return (
             <div
-                className="w-full text-center font-bold"
+                className={`w-full text-center font-bold ${props.sticky ? "fixed sticky top-12 z-50" : ""}`}
                 onClick={props.onClick}
             >
-                Level {props.category}
+                {prefix} {props.category}
             </div>
         );
     }
@@ -67,7 +95,7 @@ export default function SongPage() {
                         />
 
                         <div className="flex min-h-8 w-full items-center justify-center ">
-                            <p className="text-bold text-xs text-center hline-clamp-2 over:line-clamp-none">
+                            <p className="text-bold hline-clamp-2 over:line-clamp-none text-center text-xs">
                                 {song.title}
                             </p>
                         </div>
@@ -86,7 +114,7 @@ export default function SongPage() {
                                 return (
                                     <div key={i} data-diff={diff}>
                                         {
-                                            song.sp[diff] ?? "—" // emdash
+                                            song[context.isSp ? "sp" : "dp"][diff] ?? "—" // emdash
                                         }
                                     </div>
                                 );
@@ -102,18 +130,25 @@ export default function SongPage() {
         <div className="container">
             <>
                 {summary &&
-                    Object.entries(summary).map(([category, songs], i) => {
+                    Object.entries(summary).map(([category, songs], _) => {
                         return (
-                            <div className="flex-column flex flex-wrap justify-center">
+                            <div
+                                key={category}
+                                className="flex-column flex flex-wrap justify-center"
+                            >
                                 <SongCategoryHeader
                                     category={category}
-                                    key={i}
+                                    sticky={openCategory == category}
                                     onClick={() =>
-                                        setOpenIndex(openIndex == i ? -1 : i)
+                                        setOpenCategory(
+                                            openCategory == category
+                                                ? ""
+                                                : category,
+                                        )
                                     }
                                 />
 
-                                {openIndex == i && (
+                                {openCategory == category && (
                                     <SongCategoryBody songs={songs} />
                                 )}
                             </div>

@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
+import NavBar from "./components/NavBar";
 
 export const metadata = {
     title: "DDR BPM",
@@ -16,11 +17,7 @@ export default function RootLayout({
     return (
         <html lang="en" className={`${GeistSans.variable}`}>
             <Header />
-            <body>
-                <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-                    {children}
-                </main>
-            </body>
+            {children}
         </html>
     );
 }
