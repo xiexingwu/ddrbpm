@@ -2,12 +2,12 @@
 import { useState } from "react";
 import { IAppContext, AppContext } from "~/AppContext";
 import NavBar from "~/components/NavBar";
-import { Sort } from "~/types/Sort";
+import { SortBy } from "~/types/SortBy";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
     const [isSp, setIsSp] = useState<boolean>(true);
     const [readSpeed, setReadSpeed] = useState<number>(600);
-    const [sortBy, setSortBy] = useState<Sort>("Version");
+    const [sortBy, setSortBy] = useState<SortBy>("Version");
 
     const context: IAppContext = {
         isSp, setIsSp,
@@ -16,9 +16,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     }
     return (
         <AppContext.Provider value={{...context}}>
-            <body>
+            <body className="text-white">
                 <NavBar withContext={true} />
-                <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+                <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
                     {children}
                 </main>
             </body>

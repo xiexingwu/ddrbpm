@@ -1,7 +1,6 @@
 import "~/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
-import NavBar from "./components/NavBar";
 
 export const metadata = {
     title: "DDR BPM",

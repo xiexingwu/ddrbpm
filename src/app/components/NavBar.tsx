@@ -1,8 +1,9 @@
+import "./NavBar.css";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext } from "react";
-import { FaArrowRightArrowLeft } from "react-icons/fa6";
-import { AppContext, IAppContext } from "~/AppContext";
+import { AppContext } from "~/AppContext";
+import { sortBys } from "~/types/SortBy";
 
 type Props = {
     withContext: boolean;
@@ -11,8 +12,8 @@ export default function NavBar(props: Props) {
     const pathname = usePathname();
 
     return (
-        <div className="fixed sticky top-0 z-50 flex h-12 flex-row justify-center bg-blue-700">
-            <div className="flex flex-row items-center justify-between px-4">
+        <div className="fixed sticky top-0 z-50 flex h-12 flex-row bg-blue-700 pl-2">
+            <div className="flex flex-row items-center justify-between w-full">
                 <div className="space-x-4">
                     <Link
                         className={`link ${pathname === "/" ? "active" : ""}`}
@@ -34,63 +35,54 @@ export default function NavBar(props: Props) {
     );
 }
 
-function SpDp() {
-    /* {sp_pad|dp_pad}(SP|DP) */
-    const context = useContext<IAppContext>(AppContext);
-    return (
-        <div>
-            <div onClick={() => context.setIsSp(!context.isSp)}>
-                <img
-                    src="/pad_dp.png"
-                    className={`absolute start-0 scale-75 justify-self-start ${!context.isSp ? "" : "grayscale"}`}
-                />
-                <img
-                    src="/pad_sp.png"
-                    className={`absolute start-0 scale-75 justify-self-start`}
-                />
-            </div>
-
-            <div className={`${context.isSp ? "" : "grayscale"}`}>
-                {context.isSp ? "SP" : "DP"}
-            </div>
-        </div>
-    );
-}
-
-function SpDpSwap() {
-    /* {sp_pad.png} SP <-> DP {dp_pad.png} */
-    const context = useContext<IAppContext>(AppContext);
-    return (
-        <div>
-            <div className="items-middle flex flex-row space-x-4 px-4">
-                <div className="text-nowrap">
-                    <p
-                        className={`text-white ${context.isSp ? "" : "grayscale"}`}
-                    >
-                        <img src="/pad_sp.png" className={`inline scale-75`} />
-                    </p>
-                </div>
-
-                <FaArrowRightArrowLeft
-                    className="self-center"
-                    onClick={() => context.setIsSp(!context.isSp)}
-                />
-
-                <div className="text-nowrap">
-                    <p
-                        className={`text-white ${!context.isSp ? "" : "grayscale"}`}
-                    >
-                        <img src="/pad_dp.png" className={`inline scale-75`} />
-                    </p>
-                </div>
-            </div>
-        </div>
-    );
-}
-
 function Settings() {
+    const context = useContext(AppContext);
+
+    function SortBy() {
+        return (
+            <div>
+                <select
+                    className="bg-inherit"
+                    value={context.sortBy}
+                    onChange={(e) => context.setSortBy(e.target.value)}
+                >
+                    {sortBys.map((sortBy, _) => {
+                        return (
+                            <option value={sortBy} key={sortBy}>
+                                {sortBy}
+                            </option>
+                        );
+                    })}
+                </select>
+            </div>
+        );
+    }
+
+    function SpDp() {
+        /* {sp_pad|dp_pad}(SP|DP) */
+        return (
+            <div
+                className="flex flex-row flex-nowrap items-center"
+                onClick={() => context.setIsSp(!context.isSp)}
+            >
+                <p className="">{context.isSp ? "SP" : "DP"}</p>
+                <div className="relative -mx-2">
+                    <img
+                        className={`scale-[0.66] ${!context.isSp ? "" : "grayscale"}`}
+                        src="/pad_dp.png"
+                    />
+                    <img
+                        className={`absolute inset-0 scale-[0.66]`}
+                        src="/pad_sp.png"
+                    />
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="flex flex-row space-x-4">
+        <div className="flex flex-row items-center space-x-2">
+            <SortBy />
             <SpDp />
         </div>
     );

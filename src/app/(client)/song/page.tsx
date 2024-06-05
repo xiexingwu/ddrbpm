@@ -19,9 +19,10 @@ type SummarySong = {
     bpm_range: Bpm;
 };
 
-type SummaryCategory = string; // 1-19, A-Z0-9 kanas, A3/A20P/etc.
-
-type Summary = Record<SummaryCategory, SummarySong[]>;
+type Summary = {
+    category: string | number;
+    songs: SummarySong[];
+}[];
 
 type HeaderProps = {
     category: string;
@@ -37,7 +38,7 @@ export default function SongPage() {
     // Load data
     const [summary, setSummary] = useState<Summary | null>(null);
     useEffect(() => {
-                console.log(context);
+        console.log(context);
         let summaryName: string;
         switch (context.sortBy) {
             case "Version":
@@ -59,17 +60,19 @@ export default function SongPage() {
 
     // components
     function SongCategoryHeader(props: HeaderProps) {
-        let prefix: string
+        let prefix: string;
         switch (context.sortBy) {
             case "Version":
-                prefix = "DDR"
+                prefix = "DDR";
                 break;
             case "Level":
-                prefix = "LEVEL"
-                break
+                prefix = "LEVEL";
+                break;
             case "Name":
+                prefix = "NAME";
+                break;
             default:
-                prefix = ""
+                prefix = "";
         }
         return (
             <div
@@ -114,7 +117,9 @@ export default function SongPage() {
                                 return (
                                     <div key={i} data-diff={diff}>
                                         {
-                                            song[context.isSp ? "sp" : "dp"][diff] ?? "—" // emdash
+                                            song[context.isSp ? "sp" : "dp"][
+                                                diff
+                                            ] ?? "—" // emdash
                                         }
                                     </div>
                                 );
@@ -128,33 +133,36 @@ export default function SongPage() {
 
     return (
         <div className="container">
-            <>
-                {summary &&
-                    Object.entries(summary).map(([category, songs], _) => {
-                        return (
-                            <div
-                                key={category}
-                                className="flex-column flex flex-wrap justify-center"
-                            >
-                                <SongCategoryHeader
-                                    category={category}
-                                    sticky={openCategory == category}
-                                    onClick={() =>
-                                        setOpenCategory(
-                                            openCategory == category
-                                                ? ""
-                                                : category,
-                                        )
-                                    }
-                                />
+            {summary &&
+                summary.map(({ category, songs }, _) => {
+                    category = category.toString();
+                    return (
+                        <>
+                            {songs.length > 0 && (
+                                <div
+                                    key={category}
+                                    className="flex-column flex flex-wrap justify-center"
+                                >
+                                    <SongCategoryHeader
+                                        category={category}
+                                        sticky={openCategory == category}
+                                        onClick={() =>
+                                            setOpenCategory(
+                                                openCategory == category
+                                                    ? ""
+                                                    : category,
+                                            )
+                                        }
+                                    />
 
-                                {openCategory == category && (
-                                    <SongCategoryBody songs={songs} />
-                                )}
-                            </div>
-                        );
-                    })}
-            </>
+                                    {openCategory == category && (
+                                        <SongCategoryBody songs={songs} />
+                                    )}
+                                </div>
+                            )}
+                        </>
+                    );
+                })}
         </div>
     );
 }
