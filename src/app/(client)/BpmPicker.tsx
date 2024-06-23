@@ -1,62 +1,20 @@
 import { useState } from "react";
 import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6";
-import type { Bpm } from "~/types/Bpm";
+import {
+    fmtSpeedMod,
+    guessSpeedMod,
+    type Bpm,
+    type ReadSpeed,
+    type SpeedMod,
+} from "~/types/Bpm";
 
-type SpeedMod = number;
-// | 0.25
-// | 0.5
-// | 0.75
-// | 1.0
-// | 1.25
-// | 1.5
-// | 1.75
-// | 2.0
-// | 2.25
-// | 2.5
-// | 2.75
-// | 3.0
-// | 3.25
-// | 3.5
-// | 3.75
-// | 4.0
-// | 4.5
-// | 5.0
-// | 5.5
-// | 6.0
-// | 6.5
-// | 7.0
-// | 7.5
-// | 8.0;
-
-type Props = {
+type BpmPickerProps = {
     speedMod?: SpeedMod;
     bpms: Bpm;
-    readSpeed?: number;
+    readSpeed?: ReadSpeed;
 };
 
-function fmtSpeedMod(speedMod: SpeedMod): string {
-    let str = speedMod.toFixed(2);
-
-    if (str.endsWith("0")) str = str.slice(0, -1);
-    if (str.endsWith("0")) str = str.slice(0, -1);
-    if (str.endsWith(".")) str = str.slice(0, -1);
-
-    return str;
-}
-
-function guessSpeedMod(bpm: number, readSpeed: number) {
-    let guess = Math.floor(readSpeed / bpm);
-    while (guess <= 7.5) {
-        const nextGuess = guess + (guess < 4.0 ? 0.25 : 0.5);
-        if (readSpeed - nextGuess * bpm < 0) {
-            break;
-        }
-        guess = nextGuess;
-    }
-    return guess;
-}
-
-function Header(props: Props) {
+function Header(props: BpmPickerProps) {
     return (
         <div className="flex flex-row flex-nowrap">
             {props.bpms.length == 1 ? (
@@ -75,7 +33,7 @@ function Header(props: Props) {
     );
 }
 
-function Body(props: Props) {
+function Body(props: BpmPickerProps) {
     return (
         <div className="flex flex-row flex-nowrap">
             {props.bpms.length == 1 ? (
@@ -104,7 +62,7 @@ function Body(props: Props) {
     );
 }
 
-export default function BpmPicker(props: Props) {
+export default function BpmPicker(props: BpmPickerProps) {
     const [speedMod, setSpeedMod] = useState<SpeedMod>(
         guessSpeedMod(props.bpms.slice(-1).pop()!, props.readSpeed ?? 500),
     );
@@ -133,7 +91,13 @@ export default function BpmPicker(props: Props) {
                 <Header {...props} />
                 <>
                     {mods.map((speedMod, i) => {
-                        return <Body speedMod={speedMod} {...props} key={i} />;
+                        return (
+                            <Body
+                                speedMod={speedMod}
+                                {...props}
+                                key={speedMod}
+                            />
+                        );
                     })}
                 </>
             </div>
