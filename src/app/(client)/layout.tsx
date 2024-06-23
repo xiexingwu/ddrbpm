@@ -1,25 +1,29 @@
 "use client";
 import { useState } from "react";
 import { type IAppContext, AppContext } from "~/AppContext";
-import NavBar from "~/components/NavBar";
+import NavBar from "~/NavBar";
 import { type SortBy } from "~/types/SortBy";
+import { type SpDp } from "~/types/Level";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-    const [isSp, setIsSp] = useState<boolean>(true);
+    const [spDp, setSpDp] = useState<SpDp>("sp");
     const [readSpeed, setReadSpeed] = useState<number>(600);
     const [sortBy, setSortBy] = useState<SortBy>("Version");
 
     const context: IAppContext = {
-        isSp, setIsSp,
-        readSpeed, setReadSpeed,
-        sortBy, setSortBy
-    }
+        spDp,
+        setSpDp,
+        readSpeed,
+        setReadSpeed,
+        sortBy,
+        setSortBy,
+    };
     return (
-        <AppContext.Provider value={{...context}}>
+        <AppContext.Provider value={{ ...context }}>
             <body className="text-white">
                 <NavBar withContext={true} />
                 <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-                    {children}
+                    <div className="container">{children}</div>
                 </main>
             </body>
         </AppContext.Provider>
