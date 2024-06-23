@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
-import BpmPicker from "./components/BpmPicker";
-import NavBar from "./components/NavBar";
+import BpmPicker from "./(client)/BpmPicker";
+import NavBar from "./NavBar";
+import Image from "next/image";
 
 export default function HomePage() {
     return (
@@ -10,9 +11,9 @@ export default function HomePage() {
                 <NavBar withContext={false} />
                 <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
                     <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-                        Create{" "}
-                        <span className="text-[hsl(280,100%,70%)]">T3</span> App
+                        DDR BPM
                     </h1>
+                    <Image src="/icons/DDR-BPM-Icon-blue.png" alt="DDR BPM" width={240} height={240}/>
                     <BpmPicker bpms={[100]} readSpeed={600} />
                     <BpmPicker bpms={[100, 200]} />
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
